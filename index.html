@@ -25,17 +25,21 @@
     <title>Gym Alarm</title>
 </head>
 <body>
-    <div class="reminder-homescreen">
-        <p>Thanks for checking out Gym Alarm!</p>
+    <div id="reminder" class="reminder-homescreen">
+        
         <p>
-            On mobile, you can use this clock as an app by going to your browser menu and selecting "Add to Home screen".
+            <i id="reminder-close" class="fa fa-times" aria-hidden="true"
+            onclick="closeReminder()"></i>
+            You can use this alarm as an app by selecting "Add to Home screen" in your browser menu.
         </p>    
     </div>
     <div class="flex-wrapper">
         <div class="flex-center">
-            
+            <h1 class="textShadow">Arnold Alarm</h1>
+            <div class="textShadow">Wake up to Arnold's greatness.</div>
+            <br><br><br>
 
-            <div class="alarm-control">
+            <div id="alarm-control" class="alarm-control">
                 <table>
                     <tr>
                         <td onclick="alarm.addHr()">
@@ -47,9 +51,15 @@
                         </td>
                     </tr>
                     <tr class="digital">
-                        <td id="alarm-hr" class="hr">6</td>
+                        <td class="hr">
+                            <span id="alarm-hr"></span>
+                            <span class="sym">HR</span>
+                        </td>
                         <td>:</td>
-                        <td id="alarm-min" class="min">00</td>
+                        <td  class="min">
+                            <span id="alarm-min"></span>
+                            <span class="sym">min</span>
+                        </td>
                     </tr>
                     <tr>
                         <td onclick="alarm.minusHr()">
@@ -61,15 +71,19 @@
                         </td>
                     </tr>
                 </table>
-                <button onclick="alarm.setAlarm()">Set Alarm</button>
+                <button id="btn-setAlarm" onclick="alarm.setAlarm()">Set Alarm</button>
+                <button id="btn-reset" onclick="location.reload()">Reset</button>
             </div>
 
-            <h4>Current time:</h4>
-            <h4 id="time" class="textShadow"></h4>
+            <div>
+                <br>
+                <div>Current time:</div>
+                <div><strong id="time" class="textShadow"></strong></div>
+            </div>
             <!-- <h4 id="day"></h4>
             <h4 id="date"></h4> -->
 
-            <audio id="arnold" controls>
+            <audio id="arnold">
                 <source src="audio/arnold.mp3" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
@@ -89,7 +103,6 @@
 var alarm = {
     set: false,
     timestamp: 0,
-    nextDay: true,
     el: {
         hr: document.getElementById('alarm-hr'),
         min: document.getElementById('alarm-min'),
@@ -121,6 +134,12 @@ var alarm = {
         this.updateEl(false, true);
     },
     setAlarm: function(){
+        var btn = document.getElementById('btn-setAlarm');
+        btn.innerText = 'Alarm Set!';
+        btn.setAttribute('disabled', true);
+
+        document.getElementById('alarm-control').setAttribute('set', true);
+
         this.set = true;
         var m = moment({ hour: this.hr, minute: this.min});
         var stamp = m.unix();
@@ -155,7 +174,9 @@ var alarm = {
     }
 }
 
-
+function closeReminder(){
+    document.getElementById('reminder').style="display:none;"
+}
 var beginT = Date.now();
 console.log(beginT);
 function playArnold(){
