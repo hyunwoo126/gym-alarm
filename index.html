@@ -22,7 +22,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="fonts/font-awesome.min.css">
     <link rel="stylesheet" href="index.css">
-    <title>Gym Alarm</title>
+    <title>Arnold Alarm</title>
 </head>
 <body>
     <div id="reminder" class="reminder-homescreen">
@@ -186,6 +186,7 @@ function playArnold(){
 function update(){
     //console.log(Date.now());
     if(alarm.set && alarm.timestamp < moment().unix()){
+        alarm.set = false;
         playArnold();
     }
     // document.getElementById('date').innerText = moment().format('MMMM Do YYYY');
