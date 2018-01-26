@@ -20,6 +20,7 @@
     <meta name="msapplication-TileImage" content="img/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
     <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="font-awesome.min.css">
     <link rel="stylesheet" href="index.css">
     <title>Gym Alarm</title>
 </head>
@@ -32,35 +33,46 @@
     </div>
     <div class="flex-wrapper">
         <div class="flex-center">
-            <h1 id="time" class="digital"></h1>
-            <h1 id="day"></h1>
-            <h1 id="date"></h1>
+            
+
+            <div class="alarm-control">
+                <table>
+                    <tr>
+                        <td onclick="alarm.addHr()">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </td>
+                        <td></td>
+                        <td onclick="alarm.addMin()">
+                            <i class="fa fa-plus" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                    <tr class="digital">
+                        <td id="alarm-hr" class="hr">6</td>
+                        <td>:</td>
+                        <td id="alarm-min" class="min">00</td>
+                    </tr>
+                    <tr>
+                        <td onclick="alarm.minusHr()">
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                        </td>
+                        <td></td>
+                        <td onclick="alarm.minusMin()">
+                            <i class="fa fa-minus" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                </table>
+                <button onclick="alarm.setAlarm()">Set Alarm</button>
+            </div>
+
+            <h4>Current time:</h4>
+            <h4 id="time" class="textShadow"></h4>
+            <!-- <h4 id="day"></h4>
+            <h4 id="date"></h4> -->
 
             <audio id="arnold" controls>
                 <source src="audio/arnold.mp3" type="audio/mpeg">
                 Your browser does not support the audio element.
             </audio>
-
-            <div class="alarm-control">
-                <table>
-                    <tr>
-                        <td onclick="alarm.addHr()">+</td>
-                        <td></td>
-                        <td onclick="alarm.addMin()">+</td>
-                    </tr>
-                    <tr>
-                        <td id="alarm-hr">6</td>
-                        <td>:</td>
-                        <td id="alarm-min">00</td>
-                    </tr>
-                    <tr>
-                        <td onclick="alarm.minusHr()">-</td>
-                        <td></td>
-                        <td onclick="alarm.minusMin()">-</td>
-                    </tr>
-                </table>
-                <button onclick="alarm.setAlarm()">Set Alarm</button>
-            </div>
             
         </div>
     </div>
@@ -76,6 +88,8 @@
 
 var alarm = {
     set: false,
+    timestamp: 0,
+    nextDay: true,
     el: {
         hr: document.getElementById('alarm-hr'),
         min: document.getElementById('alarm-min'),
@@ -108,6 +122,12 @@ var alarm = {
     },
     setAlarm: function(){
         this.set = true;
+        var m = moment({ hour: this.hr, minute: this.min});
+        var stamp = m.unix();
+        if(stamp < moment().unix()){
+            stamp += 86400;
+        }
+        this.timestamp = stamp;
     },
     getTime: function(){
         var m = moment({ hour: this.hr, minute: this.min});
@@ -144,12 +164,12 @@ function playArnold(){
 }
 function update(){
     //console.log(Date.now());
-    if(alarm.set && alarm.getTime() < Date.now()){
+    if(alarm.set && alarm.timestamp < moment().unix()){
         playArnold();
     }
-    document.getElementById('date').innerText = moment().format('MMMM Do YYYY');
-    document.getElementById('day').innerText = moment().format('dddd');
-    document.getElementById('time').innerText = moment().format('h:mm:ss a');
+    // document.getElementById('date').innerText = moment().format('MMMM Do YYYY');
+    // document.getElementById('day').innerText = moment().format('dddd');
+    document.getElementById('time').innerText = moment().format('H:mm:ss');
     setTimeout(update, 1000);
 }
 
