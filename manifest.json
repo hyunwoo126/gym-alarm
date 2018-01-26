@@ -1,6 +1,6 @@
 {
-    "short_name": "Clock",
-    "name": "Offline Clock",
+    "short_name": "Gym Alarm",
+    "name": "Gym Alarm",
     "icons": [
       {
         "src": "img/android-icon-36x36.png",
