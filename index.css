@@ -1,3 +1,6 @@
+
+@font-face { font-family: digital; src: url('font/DS-DIGI.TTF'); } 
+
 body{
     margin: 0px;
     font-family: Arial;
@@ -28,6 +31,13 @@ body{
 .reminder-homescreen p{
     display: inline-block;
     margin: 4px;
+}
+.digital{
+    font-family: digital;
+}
+.alarm-control table{
+    margin: auto;
+    font-size: 60px;
 }
 
 

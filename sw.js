@@ -8,6 +8,8 @@ function addCache(){
             'index.css',
             'moment.js',
             'manifest.json',
+            'font/DS-DIGI.TTF',
+            'audio/arnold.mp3',
         ]);
     });
 }

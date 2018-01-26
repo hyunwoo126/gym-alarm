@@ -21,20 +21,47 @@
     <meta name="theme-color" content="#ffffff">
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="index.css">
-    <title>Offline Clock</title>
+    <title>Gym Alarm</title>
 </head>
 <body>
     <div class="reminder-homescreen">
-        <p>Thanks for checking out Offline Clock!</p>
+        <p>Thanks for checking out Gym Alarm!</p>
         <p>
             On mobile, you can use this clock as an app by going to your browser menu and selecting "Add to Home screen".
         </p>    
     </div>
     <div class="flex-wrapper">
         <div class="flex-center">
-            <h1 id="time"></h1>
+            <h1 id="time" class="digital"></h1>
             <h1 id="day"></h1>
             <h1 id="date"></h1>
+
+            <audio id="arnold" controls>
+                <source src="audio/arnold.mp3" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+
+            <div class="alarm-control">
+                <table>
+                    <tr>
+                        <td onclick="alarm.addHr()">+</td>
+                        <td></td>
+                        <td onclick="alarm.addMin()">+</td>
+                    </tr>
+                    <tr>
+                        <td id="alarm-hr">6</td>
+                        <td>:</td>
+                        <td id="alarm-min">00</td>
+                    </tr>
+                    <tr>
+                        <td onclick="alarm.minusHr()">-</td>
+                        <td></td>
+                        <td onclick="alarm.minusMin()">-</td>
+                    </tr>
+                </table>
+                <button onclick="alarm.setAlarm()">Set Alarm</button>
+            </div>
+            
         </div>
     </div>
     
@@ -46,11 +73,89 @@
 
 <script src="moment.js"></script>
 <script>
-(function update(){
+
+var alarm = {
+    set: false,
+    el: {
+        hr: document.getElementById('alarm-hr'),
+        min: document.getElementById('alarm-min'),
+    },
+    hr: 6,
+    min: 0,
+    addHr: function(){
+        this.hr++;
+        if(this.hr == 25){
+            this.hr = 0;
+        }
+        this.updateEl(true, false);
+    },
+    minusHr: function(){
+        this.hr--;
+        if(this.hr == -1){ this.hr = 24; }
+        this.updateEl(true, false);
+    },
+    addMin: function(){
+        this.min++;
+        if(this.min == 61){
+            this.min = 0;
+        }
+        this.updateEl(false, true);
+    },
+    minusMin: function(){
+        this.min--;
+        if(this.min == -1){ this.min = 60; }
+        this.updateEl(false, true);
+    },
+    setAlarm: function(){
+        this.set = true;
+    },
+    getTime: function(){
+        var m = moment({ hour: this.hr, minute: this.min});
+        return m.unix()*1000;
+    },
+    updateEl: function(hr, min){
+        if(typeof hr == 'undefined'){ var hr = true; }
+        if(typeof min == 'undefined'){ var min = true; }
+        if(hr){
+            var str_hr = this.hr.toString();
+            if(str_hr.length < 2){ str_hr = '0' + str_hr; }
+            this.el.hr.innerText = str_hr;
+        }
+        if(min){
+            var str_min = this.min.toString();
+            if(str_min.length < 2){ str_min = '0' + str_min; }
+            this.el.min.innerText = str_min;
+        }        
+    },
+    init: function(){
+        var now = new Date();
+        this.hr = now.getHours();
+        this.min = now.getMinutes();
+        this.updateEl();
+    }
+}
+
+
+var beginT = Date.now();
+console.log(beginT);
+function playArnold(){
+    var arnold = document.getElementById('arnold');
+    arnold.play();
+}
+function update(){
+    //console.log(Date.now());
+    if(alarm.set && alarm.getTime() < Date.now()){
+        playArnold();
+    }
     document.getElementById('date').innerText = moment().format('MMMM Do YYYY');
     document.getElementById('day').innerText = moment().format('dddd');
     document.getElementById('time').innerText = moment().format('h:mm:ss a');
     setTimeout(update, 1000);
+}
+
+(function(){
+    update();
+    alarm.init();
 })();
 </script>
 <script>
